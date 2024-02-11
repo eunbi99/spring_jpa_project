@@ -1,0 +1,31 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: create
+        dialect: org.hibernate.dialect.MySQLDialect
+      show-sql: true
+  datasource:
+    initialization-mode: always
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/europehang
+    username: root
+    password: 1234
+    hikari:
+      maximum-pool-size: 40
+  redis:
+    host: local
+    port: 6379
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
