@@ -1,12 +1,15 @@
 package com.europehang.europe.user.dto;
 
 import com.europehang.europe.common.enums.Gender;
-import com.europehang.europe.common.enums.Role;
+import com.europehang.europe.role.domain.Role;
 import com.europehang.europe.user.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
+import java.util.Collections;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -39,13 +42,14 @@ public class UserJoinRequestDto {
     }
 
     // DTO -> entity 변경
-    public User toEntity() {
+    public User toEntity(String encryptPassword, Role role) {
         return User.builder()
                 .email(email)
                 .username(username)
-                .password(password)
+                .password(encryptPassword)
                 .gender(gender)
                 .nickname(nickname)
+                .roles(Collections.singleton(role))
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.europehang.europe.config;
 
-import io.lettuce.core.dynamic.annotation.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -23,13 +23,13 @@ public class RedisRepositoryConfig {
         return new LettuceConnectionFactory(host,port);
     }
 
-    @Bean
-    public RedisTemplate<String,Object> redisTemplate() {
-        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-    }
+//    @Bean
+//    public RedisTemplate<String,Object> redisTemplate() {
+//        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(redisConnectionFactory());
+//
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+//    }
 
 }

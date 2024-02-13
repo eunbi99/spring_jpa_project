@@ -1,16 +1,45 @@
 package com.europehang.europe.user.controller;
 
+import com.europehang.europe.common.dto.ApiResponseDto;
+import com.europehang.europe.common.enums.ResponseStatus;
+import com.europehang.europe.user.dto.UserJoinRequestDto;
 import com.europehang.europe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-//    @PostMapping("/join")
-//    public ApiResponse Join(UserJoinRequestDto userJoinRequestDto) {
-//        userService.userJoin(userJoinRequestDto);
-//        return ApiResponse.success(200,"ok");
-//    }
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponseDto> signup(@RequestBody UserJoinRequestDto userJoinRequestDto) {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), userService.userSignup(userJoinRequestDto));
+
+        return ResponseEntity.ok(res);
+    }
+
+    /*
+      USER, ADMIN 권한 모두 호출할 수 있도록 설정
+    */
+    @GetMapping("/user")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<ApiResponseDto> getMyUserInfo() {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), userService.getMyUserWithRoles().get());
+
+        return ResponseEntity.ok(res);
+    }
+
+    /*
+       ADMIN 권한만 호출할 수 있도록 설정
+     */
+    @GetMapping(value = "/user/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDto> getUserInfo(@PathVariable("email") String email) {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), userService.getUserWithRoles(email).get());
+
+        return ResponseEntity.ok(res);
+    }
 }
