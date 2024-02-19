@@ -3,6 +3,8 @@ package com.europehang.europe.post.dto;
 import com.europehang.europe.common.enums.Gender;
 import com.europehang.europe.common.enums.RecruitStatus;
 import com.europehang.europe.post.domain.Post;
+import com.europehang.europe.user.domain.User;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class PostDetailResponseDto {
     public String title;
@@ -27,23 +28,41 @@ public class PostDetailResponseDto {
     public String country;
     public String city;
     public int views;
+    public String nickname;
 
-    public static PostDetailResponseDto toDto(Post post) {
-        return PostDetailResponseDto.builder()
-                .title(post.getTitle())
-                .gender(post.getGender())
-                .content(post.getContent())
-                .kakao_url(post.getKakao_url())
-                .isRecruitCompleted(post.getIsRecruitCompleted())
-                .likes(post.getLikes())
-                .createdDate(post.getCreatedDate())
-                .travelStartDate(post.getTravelDate())
-                .country(post.getParentCategory().getCategoryName())
-                .city(post.getChildCategory().getCategoryName())
-                .views(post.getViews())
-                .build();
-        
-      
+    @QueryProjection
+    public PostDetailResponseDto(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, RecruitStatus isRecruitCompleted, int likes, LocalDateTime createdDate, String travelStartDate, String country, String city, int views, String nickname) {
+        this.title = title;
+        this.gender = gender;
+        this.content = content;
+        this.kakao_url = kakao_url;
+        this.recruitmentLimit = recruitmentLimit;
+        this.isRecruitCompleted = isRecruitCompleted;
+        this.likes = likes;
+        this.createdDate = createdDate;
+        this.travelStartDate = travelStartDate;
+        this.country = country;
+        this.city = city;
+        this.views = views;
+        this.nickname = nickname;
+    }
 
+    @Override
+    public String toString() {
+        return "PostDetailResponseDto{" +
+                "title='" + title + '\'' +
+                ", gender=" + gender +
+                ", content='" + content + '\'' +
+                ", kakao_url='" + kakao_url + '\'' +
+                ", recruitmentLimit=" + recruitmentLimit +
+                ", isRecruitCompleted=" + isRecruitCompleted +
+                ", likes=" + likes +
+                ", createdDate=" + createdDate +
+                ", travelStartDate='" + travelStartDate + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", views=" + views +
+                ", nickname='" + nickname + '\'' +
+                '}';
     }
 }

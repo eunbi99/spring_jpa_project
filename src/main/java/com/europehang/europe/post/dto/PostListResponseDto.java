@@ -7,13 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @Builder
-public class PostResponseDto {
+public class PostListResponseDto {
     private Long id;
     private String title;
     private String content;
@@ -22,9 +21,10 @@ public class PostResponseDto {
     private int likes;
     private String country;
     private String city;
+    private String nickname;
 
     @QueryProjection
-    public PostResponseDto(Long id, String title, String content, RecruitStatus isRecrutingYn, LocalDateTime createdDate, int likes, String country, String city) {
+    public PostListResponseDto(Long id, String title, String content, RecruitStatus isRecrutingYn, LocalDateTime createdDate, int likes, String country, String city, String nickname) {
         this.id= id;
         this.title = title;
         this.content = content;
@@ -33,10 +33,11 @@ public class PostResponseDto {
         this.likes = likes;
         this.country = country;
         this.city = city;
+        this.nickname = nickname;
     }
 
-    public static PostResponseDto toDto(Post post) {
-        return PostResponseDto.builder()
+    public static PostListResponseDto toDto(Post post) {
+        return PostListResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -45,6 +46,7 @@ public class PostResponseDto {
                 .createdDate(post.getCreatedDate())
                 .country(post.getParentCategory().getCategoryName())
                 .city(post.getChildCategory().getCategoryName())
+                .nickname(post.getUser().getNickname())
                 .build();
     }
 

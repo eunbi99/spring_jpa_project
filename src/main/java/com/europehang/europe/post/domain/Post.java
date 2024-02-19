@@ -7,16 +7,12 @@ import com.europehang.europe.common.converts.RecruitStatusConvert;
 import com.europehang.europe.common.enums.Gender;
 import com.europehang.europe.common.enums.RecruitStatus;
 import com.europehang.europe.post.dto.PostModifyRequestDto;
-import com.europehang.europe.post.dto.PostResponseDto;
+import com.europehang.europe.user.domain.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -64,9 +60,13 @@ public class Post extends BaseEntity {
     @ColumnDefault("0")
     private int views;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     @Builder
-    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory,int likes, String travelDate, RecruitStatus isRecruitCompleted, int views){
+    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory, int likes, String travelDate, RecruitStatus isRecruitCompleted, int views, User user){
         this.title= title;
         this.gender = gender;
         this.content = content;
@@ -78,6 +78,7 @@ public class Post extends BaseEntity {
         this.travelDate = travelDate;
         this.isRecruitCompleted = isRecruitCompleted;
         this.views = views;
+        this.user = user;
 
     }
 

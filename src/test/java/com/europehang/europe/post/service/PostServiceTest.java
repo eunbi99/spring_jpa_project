@@ -1,10 +1,8 @@
 package com.europehang.europe.post.service;
 
-import com.europehang.europe.category.repository.CategoryRepository;
 import com.europehang.europe.common.enums.Gender;
 import com.europehang.europe.common.enums.RecruitStatus;
 import com.europehang.europe.exception.CustomException;
-import com.europehang.europe.post.domain.Post;
 import com.europehang.europe.post.dto.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -14,6 +12,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +41,11 @@ class PostServiceTest {
 
     @Test
     public void 게시글_등록() {
+        String username = "bambi@gmail.com";
         PostRegisterRequestDto postRequest = PostRegisterRequestDto.builder()
-                .title("테스트 테스트25")
+                .title("동행구해용")
                 .gender(Gender.MALE)
-                .content("테스트")
+                .content("동행테스트입니다")
                 .kakao_url("kakao_url")
                 .recruitmentLimit(4)
                 .travelStartDate("2024-02-28")
@@ -50,9 +53,9 @@ class PostServiceTest {
                 .childCategoryId(8L)
                 .build();
 
-        Long id = postService.savePost(postRequest);
+        Long id = postService.savePost(postRequest,username);
 
-        Assertions.assertEquals(id,24);
+        Assertions.assertEquals(id,31);
 
     }
 
@@ -77,6 +80,7 @@ class PostServiceTest {
 
     @Test
     public void 없는_카테고리_게시글_등록() {
+        String username = "bambi@gmail.com";
         PostRegisterRequestDto postRequest = PostRegisterRequestDto.builder()
                 .title("파리 개선문 동행 구해요")
                 .gender(Gender.FEMALE)
@@ -88,28 +92,30 @@ class PostServiceTest {
                 .childCategoryId(40L)
                 .build();
 
-        assertThrows(CustomException.class, () -> postService.savePost(postRequest));
+        assertThrows(CustomException.class, () -> postService.savePost(postRequest,username));
 
     }
 
     @Test
     public void 모든_게시글_조회() {
-        List<PostResponseDto> posts = postService.getAllPost();
+        Pageable pageable = PageRequest.of(5,6);
+        Slice<PostListResponseDto> posts = postService.getPostListWithPaging(pageable);
 
-        for(PostResponseDto post : posts) {
-            System.out.println("글 번호 : " + post.getId()+ " 글 제목 : " + post.getTitle() + " 내용 : " + post.getContent());
+        for(PostListResponseDto post : posts) {
+            System.out.println("글 번호 : " + post.getId()+ " 글 제목 : " + post.getTitle() + " 내용 : " + post.getContent() + "나라 : " + post.getCountry() + "도시 : " + post.getCity() +  " 닉네임 : " + post.getNickname());
         }
-        Assertions.assertEquals(posts.size(), 23);
+        Assertions.assertEquals(posts.getSize(), 6);
     }
 
     @Test
     public void 게시글번호로_조회() {
-        Long id = 6L;
+        Long id = 31L;
 
         PostDetailResponseDto post = postService.findPostById(id);
 
-        Assertions.assertEquals(post.getTitle(), "파리 개선문 동행 구해요");
-        Assertions.assertEquals(post.getContent(), "개선문 가고싶어요");
+        System.out.println("게시글 : " + id +"번 " + post.toString());
+        Assertions.assertEquals(post.getTitle(), "동행구해용");
+        Assertions.assertEquals(post.getContent(), "동행테스트입니다");
 
     }
 
@@ -123,21 +129,21 @@ class PostServiceTest {
     @Test
     public void 조건별_게시글_조회() {
         PostSearchCondition condition = PostSearchCondition.builder()
-                .parentCategoryId(2L)
-                .isRecruitCompleted(RecruitStatus.RECRUIT_COMPLETE)
+                .parentCategoryId(1L)
+                .isRecruitCompleted(RecruitStatus.RECRUITING)
                 .build();
-        List<PostResponseDto> posts = postService.getPostListByCondition(condition);
+        List<PostListResponseDto> posts = postService.getPostListByCondition(condition);
 
-        for(PostResponseDto post : posts) {
-            System.out.println("id : " + post.getId() + " title: " + post.getTitle() + " country : " + post.getCountry() + "city : " + post.getCity() );
+        for(PostListResponseDto post : posts) {
+            System.out.println("id : " + post.getId() + " title: " + post.getTitle() + " country : " + post.getCountry() + "city : " + post.getCity() + "nickname" + post.getNickname());
         }
-        Assertions.assertEquals(posts.size(),1);
+        Assertions.assertEquals(posts.size(),17);
 
     }
 
     @Test
     public void 게시글_수정() {
-        Long id = 22L;
+        Long id = 31L;
         PostModifyRequestDto modifyRequestDto = PostModifyRequestDto.builder()
                 .title("수정")
                 .gender(Gender.MALE)
@@ -152,17 +158,17 @@ class PostServiceTest {
 
         Long updatedPostId = postService.modifyPost(id,modifyRequestDto);
 
-        Assertions.assertEquals(updatedPostId,22L);
+        Assertions.assertEquals(updatedPostId,31L);
 
     }
 
     @Test
     public void 게시글_삭제(){
-        Long id = 11L;
+        Long id = 32L;
 
         postService.deletePost(id);
 
 
-        Assertions.assertEquals(postService.getAllPost().size(),10);
+        Assertions.assertFalse(postService.isExistPost(id));
     }
 }

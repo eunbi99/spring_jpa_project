@@ -3,13 +3,16 @@ package com.europehang.europe.user.domain;
 import com.europehang.europe.common.BaseEntity;
 import com.europehang.europe.common.converts.GenderConvert;
 import com.europehang.europe.common.enums.Gender;
+import com.europehang.europe.post.domain.Post;
 import com.europehang.europe.role.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,6 +41,8 @@ public class User extends BaseEntity {
     @Column(name = "is_active")
     private String isActive;
 
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

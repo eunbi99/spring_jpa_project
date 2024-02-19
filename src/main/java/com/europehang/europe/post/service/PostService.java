@@ -6,57 +6,61 @@ import com.europehang.europe.exception.CustomException;
 import com.europehang.europe.post.domain.Post;
 import com.europehang.europe.post.dto.*;
 import com.europehang.europe.post.repository.PostRepository;
+import com.europehang.europe.user.domain.User;
+import com.europehang.europe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.europehang.europe.exception.ErrorCode.CATEGORY_NOT_FOUND;
-import static com.europehang.europe.exception.ErrorCode.POST_NOT_FOUND;
+import static com.europehang.europe.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public Long savePost(PostRegisterRequestDto postRequestDto) {
-
+    public Long savePost(PostRegisterRequestDto postRequestDto, String username) {
         Category parentCategory = vaildCategoryId(postRequestDto.getParentCategoryId());
         Category childCategory = vaildCategoryId(postRequestDto.getChildCategoryId());
 
-        Post post = postRequestDto.toEntity(parentCategory,childCategory);
+        User user = userRepository.findAllByEmail(username)
+                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
+
+        Post post = postRequestDto.toEntity(parentCategory,childCategory,user);
 
         postRepository.save(post);
         return post.getId();
     }
 
     /**
-     * 모든 게시글 조회
+     * 게시글 리스트 페이징
      * @return
      */
-    public List<PostResponseDto> getAllPost() {
-        return postRepository.findAll().stream()
-                .map(PostResponseDto::toDto)
-                .collect(Collectors.toList());
+    public Slice<PostListResponseDto> getPostListWithPaging(Pageable pageable) {
+
+        return postRepository.getPostListWithPaging(pageable);
     }
 
     /**
      * 글 번호로 조회
      */
     public PostDetailResponseDto findPostById(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
-        return PostDetailResponseDto.toDto(post);
+       return postRepository.getPostDetailById(id);
     }
+
     /**
      * 조건으로 게시글 리스트 조회
      */
 
-    public List<PostResponseDto> getPostListByCondition(PostSearchCondition condition) {
+    public List<PostListResponseDto> getPostListByCondition(PostSearchCondition condition) {
         return postRepository.searchPostByCondition(condition);
     }
 
@@ -95,5 +99,8 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
     }
 
+    public boolean isExistPost(Long id) {
+        return postRepository.existsById(id);
+    }
 
 }

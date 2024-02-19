@@ -1,25 +1,19 @@
 package com.europehang.europe.post.controller;
 
-import com.europehang.europe.category.domain.Category;
-import com.europehang.europe.category.service.CategoryService;
 import com.europehang.europe.common.dto.ApiResponseDto;
 import com.europehang.europe.common.enums.ResponseStatus;
-import com.europehang.europe.exception.CustomException;
-import com.europehang.europe.post.domain.Post;
 import com.europehang.europe.post.dto.PostModifyRequestDto;
 import com.europehang.europe.post.dto.PostRegisterRequestDto;
-import com.europehang.europe.post.dto.PostResponseDto;
 import com.europehang.europe.post.dto.PostSearchCondition;
 import com.europehang.europe.post.service.PostService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static com.europehang.europe.exception.ErrorCode.POST_NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,8 +21,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public ResponseEntity<ApiResponseDto> savePost(@RequestBody PostRegisterRequestDto postRequestDto) {
-        postService.savePost(postRequestDto);
+    public ResponseEntity<ApiResponseDto> savePost(@RequestBody PostRegisterRequestDto postRequestDto, Authentication authentication) {
+        String username = authentication.getName();
+        postService.savePost(postRequestDto,username);
 
         ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage());
         return ResponseEntity.ok(res);
@@ -40,8 +35,8 @@ public class PostController {
      */
 
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponseDto> getAllPost() {
-        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), postService.getAllPost());
+    public ResponseEntity<ApiResponseDto> getPostList(@PageableDefault(page = 0, size = 6,direction = Sort.Direction.DESC) Pageable pageable) {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), postService.getPostListWithPaging(pageable));
         return ResponseEntity.ok(res);
     }
 

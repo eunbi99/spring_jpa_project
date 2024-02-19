@@ -68,6 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/resources/**").permitAll()
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/posts").permitAll()
                         .anyRequest().authenticated() // 나머지 요청들은 모두 인증 되어야한다.
                 )
                 .formLogin(login -> login

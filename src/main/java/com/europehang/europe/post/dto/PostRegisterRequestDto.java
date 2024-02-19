@@ -3,6 +3,7 @@ package com.europehang.europe.post.dto;
 import com.europehang.europe.category.domain.Category;
 import com.europehang.europe.common.enums.Gender;
 import com.europehang.europe.post.domain.Post;
+import com.europehang.europe.user.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class PostRegisterRequestDto {
     private String travelStartDate;
 
 
-    public Post toEntity(Category parentCategory, Category childCategory) {
+    public Post toEntity(Category parentCategory, Category childCategory, User user) {
         return Post.builder()
                 .title(title)
                 .gender(gender)
@@ -44,6 +45,7 @@ public class PostRegisterRequestDto {
                 .parentCategory(parentCategory)
                 .childCategory(childCategory)
                 .travelDate(travelStartDate)
+                .user(user)
                 .build();
     }
 }
