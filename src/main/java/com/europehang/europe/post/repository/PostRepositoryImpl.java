@@ -48,29 +48,35 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public List<PostListResponseDto> searchPostByCondition(PostSearchCondition condition) {
-         return queryFactory
-             .select(new QPostListResponseDto(
-                         post.id,
-                         post.title,
-                         post.content,
-                         post.isRecruitCompleted,
-                         post.createdDate,
-                         post.likes,
-                         post.parentCategory.categoryName.as("country"),
-                         post.childCategory.categoryName.as("city"),
-                         post.user.nickname
-                 ))
-                 .from(post)
-                 .join(post.user)
-                 .join(post.parentCategory)
-                 .join(post.childCategory)
-                 .where(
-                         parentCategoryEq(condition.getParentCategoryId()),
-                         childCategoryEq(condition.getChildCategoryId()),
-                         isRecruitCompleted(condition.getIsRecruitCompleted())
-                 )
-                 .fetch();
+    public Slice<PostListResponseDto> searchPostByCondition(Long postId, Pageable pageable, PostSearchCondition condition) {
+        List<PostListResponseDto> posts = queryFactory
+                 .select(new QPostListResponseDto(
+                             post.id,
+                             post.title,
+                             post.content,
+                             post.isRecruitCompleted,
+                             post.createdDate,
+                             post.postLikes.size(),
+                             post.parentCategory.categoryName.as("country"),
+                             post.childCategory.categoryName.as("city"),
+                             post.user.nickname,
+                             post.travelDate
+                     ))
+                     .from(post)
+                     .join(post.user)
+                     .join(post.parentCategory)
+                     .join(post.childCategory)
+                     .where(
+                             ltPostId(postId),
+                             parentCategoryEq(condition.getParentCategoryId()),
+                             childCategoryEq(condition.getChildCategoryId()),
+                             isRecruitCompleted(condition.getIsRecruitCompleted())
+                     )
+                     .limit(pageable.getPageSize()+1)
+                     .orderBy(post.id.desc())
+                     .fetch();
+
+        return new SliceImpl<>(posts, pageable, hasNextPage(posts, pageable.getPageSize()));
     }
 
     @Override
@@ -83,7 +89,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.kakao_url,
                         post.recruitmentLimit,
                         post.isRecruitCompleted,
-                        post.likes,
+                        post.postLikes.size(),
                         post.createdDate,
                         post.travelDate,
                         post.parentCategory.categoryName.as("country"),
@@ -98,7 +104,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     }
 
     @Override
-    public Slice<PostListResponseDto> getPostListWithPaging(Pageable pageable) {
+    public Slice<PostListResponseDto> getPostListWithPaging(Long postId, Pageable pageable) {
         List<PostListResponseDto> posts = queryFactory
                 .select(new QPostListResponseDto(
                         post.id,
@@ -106,17 +112,29 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.content,
                         post.isRecruitCompleted,
                         post.createdDate,
-                        post.likes,
+                        post.postLikes.size(),
                         post.parentCategory.categoryName.as("country"),
                         post.childCategory.categoryName.as("city"),
-                        post.user.nickname
+                        post.user.nickname,
+                        post.travelDate
                 )).from(post)
                 .join(post.user)
-                .offset(pageable.getOffset())
+                .where(
+                        ltPostId(postId)
+                )
                 .limit(pageable.getPageSize()+1)
+                .orderBy(post.id.desc())
                 .fetch();
 
         return new SliceImpl<>(posts, pageable, hasNextPage(posts, pageable.getPageSize()));
+    }
+
+    private BooleanExpression ltPostId(Long postId) {
+        if (postId == null) {
+            return null;
+        }
+
+        return post.id.lt(postId);
     }
 
     private boolean hasNextPage(List<PostListResponseDto> posts, int pageSize) {

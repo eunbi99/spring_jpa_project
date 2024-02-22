@@ -3,6 +3,7 @@ package com.europehang.europe.user.domain;
 import com.europehang.europe.common.BaseEntity;
 import com.europehang.europe.common.converts.GenderConvert;
 import com.europehang.europe.common.enums.Gender;
+import com.europehang.europe.post.domain.PostLike;
 import com.europehang.europe.post.domain.Post;
 import com.europehang.europe.role.domain.Role;
 import jakarta.persistence.*;
@@ -51,6 +52,10 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_name", referencedColumnName = "role_name")}
     )
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<PostLike> likedPosts = new ArrayList<PostLike>();
+
 
     @Builder
     public User(String email, String username, String password,Gender gender,String nickname, Set<Role> roles) {

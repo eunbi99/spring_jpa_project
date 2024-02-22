@@ -4,7 +4,9 @@ import com.europehang.europe.category.domain.Category;
 import com.europehang.europe.category.repository.CategoryRepository;
 import com.europehang.europe.exception.CustomException;
 import com.europehang.europe.post.domain.Post;
+import com.europehang.europe.post.domain.PostLike;
 import com.europehang.europe.post.dto.*;
+import com.europehang.europe.post.repository.PostLikeRepository;
 import com.europehang.europe.post.repository.PostRepository;
 import com.europehang.europe.user.domain.User;
 import com.europehang.europe.user.repository.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.europehang.europe.exception.ErrorCode.*;
@@ -44,9 +47,9 @@ public class PostService {
      * 게시글 리스트 페이징
      * @return
      */
-    public Slice<PostListResponseDto> getPostListWithPaging(Pageable pageable) {
+    public Slice<PostListResponseDto> getPostListWithPaging(Long postId, Pageable pageable) {
 
-        return postRepository.getPostListWithPaging(pageable);
+        return postRepository.getPostListWithPaging(postId, pageable);
     }
 
     /**
@@ -60,8 +63,8 @@ public class PostService {
      * 조건으로 게시글 리스트 조회
      */
 
-    public List<PostListResponseDto> getPostListByCondition(PostSearchCondition condition) {
-        return postRepository.searchPostByCondition(condition);
+    public Slice<PostListResponseDto> getPostListByCondition(Long postId, Pageable pageable, PostSearchCondition condition) {
+        return postRepository.searchPostByCondition(postId,pageable,condition);
     }
 
     /**
@@ -102,5 +105,11 @@ public class PostService {
     public boolean isExistPost(Long id) {
         return postRepository.existsById(id);
     }
+
+    public Post findPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(POST_NOT_FOUND));
+    }
+
 
 }

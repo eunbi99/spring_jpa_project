@@ -14,6 +14,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "post")
@@ -51,9 +54,6 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "child_category_id")
     private Category childCategory;
 
-    @ColumnDefault("0")
-    private int likes;
-
     @Column(name="travel_start_date")
     private String travelDate;
 
@@ -64,9 +64,14 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> postLikes = new ArrayList<PostLike>();
+
+
+
 
     @Builder
-    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory, int likes, String travelDate, RecruitStatus isRecruitCompleted, int views, User user){
+    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory, String travelDate, RecruitStatus isRecruitCompleted, int views, User user){
         this.title= title;
         this.gender = gender;
         this.content = content;
@@ -74,7 +79,6 @@ public class Post extends BaseEntity {
         this.recruitmentLimit = recruitmentLimit;
         this.parentCategory = parentCategory;
         this.childCategory = childCategory;
-        this.likes = likes;
         this.travelDate = travelDate;
         this.isRecruitCompleted = isRecruitCompleted;
         this.views = views;

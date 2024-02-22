@@ -4,6 +4,9 @@ import com.europehang.europe.common.enums.Gender;
 import com.europehang.europe.common.enums.RecruitStatus;
 import com.europehang.europe.exception.CustomException;
 import com.europehang.europe.post.dto.*;
+import com.europehang.europe.post.repository.PostLikeRepository;
+import com.europehang.europe.user.domain.User;
+import com.europehang.europe.user.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -20,6 +23,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +35,12 @@ class PostServiceTest {
 
     @Autowired
     PostService postService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    PostLikeRepository postLikeRepository;
 
     private static Validator validator;
 
@@ -98,8 +108,9 @@ class PostServiceTest {
 
     @Test
     public void 모든_게시글_조회() {
-        Pageable pageable = PageRequest.of(5,6);
-        Slice<PostListResponseDto> posts = postService.getPostListWithPaging(pageable);
+        Long postId= 6L;
+        Pageable pageable = PageRequest.ofSize(6);
+        Slice<PostListResponseDto> posts = postService.getPostListWithPaging(postId, pageable);
 
         for(PostListResponseDto post : posts) {
             System.out.println("글 번호 : " + post.getId()+ " 글 제목 : " + post.getTitle() + " 내용 : " + post.getContent() + "나라 : " + post.getCountry() + "도시 : " + post.getCity() +  " 닉네임 : " + post.getNickname());
@@ -128,16 +139,19 @@ class PostServiceTest {
 
     @Test
     public void 조건별_게시글_조회() {
+        Long postId = 2L;
+        Pageable pageable = PageRequest.ofSize(6);
         PostSearchCondition condition = PostSearchCondition.builder()
                 .parentCategoryId(1L)
                 .isRecruitCompleted(RecruitStatus.RECRUITING)
                 .build();
-        List<PostListResponseDto> posts = postService.getPostListByCondition(condition);
+        Slice<PostListResponseDto> posts = postService.getPostListByCondition(postId,pageable,condition);
 
         for(PostListResponseDto post : posts) {
-            System.out.println("id : " + post.getId() + " title: " + post.getTitle() + " country : " + post.getCountry() + "city : " + post.getCity() + "nickname" + post.getNickname());
+            System.out.println("id : " + post.getId() + " title: " + post.getTitle() + " country : " + post.getCountry() +
+                    "city : " + post.getCity() + " complete : " + post.getIsRecrutingYn() + " nickname : " + post.getNickname());
         }
-        Assertions.assertEquals(posts.size(),17);
+        Assertions.assertEquals(posts.getSize(),6);
 
     }
 
@@ -168,7 +182,7 @@ class PostServiceTest {
 
         postService.deletePost(id);
 
-
         Assertions.assertFalse(postService.isExistPost(id));
     }
+
 }

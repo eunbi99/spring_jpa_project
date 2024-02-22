@@ -35,8 +35,9 @@ public class PostController {
      */
 
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponseDto> getPostList(@PageableDefault(page = 0, size = 6,direction = Sort.Direction.DESC) Pageable pageable) {
-        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), postService.getPostListWithPaging(pageable));
+    public ResponseEntity<ApiResponseDto> getPostList(@RequestParam(value = "id", required = false)  Long id,
+                                                      @PageableDefault(size = 6,direction = Sort.Direction.DESC) Pageable pageable) {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), postService.getPostListWithPaging(id, pageable));
         return ResponseEntity.ok(res);
     }
 
@@ -52,8 +53,10 @@ public class PostController {
      * 조건으로 게시글 리스트 조회
      */
     @GetMapping("/posts/search")
-    public ResponseEntity<ApiResponseDto> getPostListByCondition(@RequestBody PostSearchCondition condition) {
-        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(),postService.getPostListByCondition(condition));
+    public ResponseEntity<ApiResponseDto> getPostListByCondition(@RequestParam(value = "id", required = false)  Long id,
+                                                                 @PageableDefault(size = 6,direction = Sort.Direction.DESC) Pageable pageable,
+                                                                 @RequestBody PostSearchCondition condition) {
+        ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(),postService.getPostListByCondition(id,pageable,condition));
         return ResponseEntity.ok(res);
     }
 

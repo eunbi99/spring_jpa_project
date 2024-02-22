@@ -14,9 +14,9 @@ public interface PostRepositoryCustom {
      * 동적 쿼리 - 조건 별 조회 ( 날짜, 카테고리, 인원, ..)
      *
      */
-    List<PostListResponseDto> searchPostByCondition(PostSearchCondition condition);
+    Slice<PostListResponseDto> searchPostByCondition(Long postId, Pageable pageable, PostSearchCondition condition);
 
     PostDetailResponseDto getPostDetailById(Long id);
 
-    Slice<PostListResponseDto> getPostListWithPaging(Pageable pageable);
+    Slice<PostListResponseDto> getPostListWithPaging(Long id, Pageable pageable);
 }
