@@ -3,7 +3,6 @@ package com.europehang.europe.user.service;
 import com.europehang.europe.exception.CustomException;
 import com.europehang.europe.user.domain.User;
 import com.europehang.europe.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.europehang.europe.exception.ErrorCode.USER_NOT_FOUND;
+import static com.europehang.europe.common.enums.ErrorCode.USER_NOT_FOUND;
 
 @Component("userDetailsService")
 @RequiredArgsConstructor

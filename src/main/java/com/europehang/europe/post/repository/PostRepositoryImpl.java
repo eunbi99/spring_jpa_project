@@ -140,6 +140,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
     private boolean hasNextPage(List<PostListResponseDto> posts, int pageSize) {
         if(posts.size() > pageSize) {
             posts.remove(pageSize);
+            return true;
         }
         return false;
     }

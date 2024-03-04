@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @PostMapping("/signup")
+    @PostMapping("/signUp")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody UserJoinRequestDto userJoinRequestDto) {
         ApiResponseDto res = ApiResponseDto.of(ResponseStatus.OK, ResponseStatus.OK.getMessage(), userService.userSignup(userJoinRequestDto));
 

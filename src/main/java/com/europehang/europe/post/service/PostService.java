@@ -4,9 +4,7 @@ import com.europehang.europe.category.domain.Category;
 import com.europehang.europe.category.repository.CategoryRepository;
 import com.europehang.europe.exception.CustomException;
 import com.europehang.europe.post.domain.Post;
-import com.europehang.europe.post.domain.PostLike;
 import com.europehang.europe.post.dto.*;
-import com.europehang.europe.post.repository.PostLikeRepository;
 import com.europehang.europe.post.repository.PostRepository;
 import com.europehang.europe.user.domain.User;
 import com.europehang.europe.user.repository.UserRepository;
@@ -16,11 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static com.europehang.europe.exception.ErrorCode.*;
+import static com.europehang.europe.common.enums.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

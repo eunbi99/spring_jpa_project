@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.europehang.europe.exception.ErrorCode.USER_ALREADY_EXIST;
+import static com.europehang.europe.common.enums.ErrorCode.USER_ALREADY_EXIST;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
