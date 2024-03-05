@@ -44,11 +44,15 @@ public class UserService {
         return SecurityUtil.getCurrentUsername().flatMap(userRepository::findOneWithRolesByEmail);
     }
 
-    private void checkEmailExists(String email) {
+    public void checkEmailExists(String email) {
         userRepository.findOneWithRolesByEmail(email)
                 .ifPresent(user -> {
                     throw new CustomException(USER_ALREADY_EXIST);
                 });
+    }
+
+    public boolean checkDuplicationEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public boolean checkNicknameExist(String nickname) {

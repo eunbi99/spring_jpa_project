@@ -149,7 +149,7 @@ class PostServiceTest {
 
         for(PostListResponseDto post : posts) {
             System.out.println("id : " + post.getId() + " title: " + post.getTitle() + " country : " + post.getCountry() +
-                    "city : " + post.getCity() + " complete : " + post.getIsRecrutingYn() + " nickname : " + post.getNickname());
+                    "city : " + post.getCity() + " nickname : " + post.getNickname());
         }
         Assertions.assertEquals(posts.getSize(),6);
 

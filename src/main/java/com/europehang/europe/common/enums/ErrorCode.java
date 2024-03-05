@@ -1,4 +1,4 @@
-package com.europehang.europe.exception;
+package com.europehang.europe.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,6 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 게시글을 찾을 수 없습니다.");
 
 
-    private final HttpStatus httpStatus;
+    private final HttpStatus status;
     private final String message;
 }

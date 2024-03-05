@@ -26,7 +26,6 @@ public class UserJoinRequestDto {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{6,15}$", message = "비밀번호는 6~15자리수여야 합니다. 영문 대소문자, 숫자, 특수문자를 1개 이상 포함해야 합니다.")
     private String password;
 
-    @NotBlank(message = "성별은 필수 입력값 입니다.")
     private Gender gender;
 
     @NotBlank(message = "닉네임은 필수 입력값 입니다.")
