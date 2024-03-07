@@ -4,6 +4,8 @@ import com.europehang.europe.jwt.JwtFilter;
 import com.europehang.europe.jwt.TokenProvider;
 import com.europehang.europe.user.dto.TokenDto;
 import com.europehang.europe.user.dto.UserLoginDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -17,12 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "JWT", description = "로그인 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    @Operation(summary = "JWT 로그인", description = "JWT를 사용하여 로그인을 한다.")
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody UserLoginDto loginDto) {
         UsernamePasswordAuthenticationToken authenticationToken =

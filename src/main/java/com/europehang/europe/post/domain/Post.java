@@ -44,7 +44,7 @@ public class Post extends BaseEntity {
     @Column(name = "is_recruit_completed")
     @ColumnDefault("N")
     @Convert(converter = RecruitStatusConvert.class)
-    private RecruitStatus isRecruitCompleted;
+    private RecruitStatus recruitStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
@@ -55,7 +55,7 @@ public class Post extends BaseEntity {
     private Category childCategory;
 
     @Column(name="travel_start_date")
-    private String travelDate;
+    private String travelStartDate;
 
     @ColumnDefault("0")
     private int views;
@@ -71,7 +71,7 @@ public class Post extends BaseEntity {
 
 
     @Builder
-    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory, String travelDate, RecruitStatus isRecruitCompleted, int views, User user){
+    public Post(String title, Gender gender, String content, String kakao_url, int recruitmentLimit, Category parentCategory, Category childCategory, String travelStartDate, RecruitStatus recruitStatus, int views, User user){
         this.title= title;
         this.gender = gender;
         this.content = content;
@@ -79,8 +79,8 @@ public class Post extends BaseEntity {
         this.recruitmentLimit = recruitmentLimit;
         this.parentCategory = parentCategory;
         this.childCategory = childCategory;
-        this.travelDate = travelDate;
-        this.isRecruitCompleted = isRecruitCompleted;
+        this.travelStartDate = travelStartDate;
+        this.recruitStatus = recruitStatus;
         this.views = views;
         this.user = user;
 
@@ -94,8 +94,8 @@ public class Post extends BaseEntity {
         this.parentCategory = parentCategory;
         this.childCategory = childCategory;
         this.recruitmentLimit = modifyRequestDto.getRecruitmentLimit();
-        this.travelDate = modifyRequestDto.getTravelStartDate();
-        this.isRecruitCompleted = modifyRequestDto.getRecuritCompleteStatus();
+        this.travelStartDate = modifyRequestDto.getTravelStartDate();
+        this.recruitStatus = modifyRequestDto.getRecruitStatus();
     }
 
 }

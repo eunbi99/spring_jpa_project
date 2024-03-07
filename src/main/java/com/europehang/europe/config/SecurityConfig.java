@@ -49,6 +49,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        String[] SWAGGER_URI = {
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.index.html",
+                "/webjars/**",
+                "/swagger-resources/**"
+        };
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 // 세션 관리 상태 없음
@@ -65,15 +73,17 @@ public class SecurityConfig {
                 )
                 // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다는 의미.
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(SWAGGER_URI).permitAll()
                         .requestMatchers("/resources/**").permitAll()
-                        .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/signUp").permitAll()
+                        .requestMatchers("/user/check-email").permitAll()
                         .requestMatchers("/authenticate").permitAll()
                         .requestMatchers("/posts/**").permitAll()
                         .anyRequest().authenticated() // 나머지 요청들은 모두 인증 되어야한다.
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/login1")) // 수정 필요
+                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/login")) // 수정 필요
                         .permitAll()
                 )
                 .with(new JwtSecurityConfig(tokenProvider), customizer -> {})

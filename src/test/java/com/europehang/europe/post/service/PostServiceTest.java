@@ -143,7 +143,7 @@ class PostServiceTest {
         Pageable pageable = PageRequest.ofSize(6);
         PostSearchCondition condition = PostSearchCondition.builder()
                 .parentCategoryId(1L)
-                .isRecruitCompleted(RecruitStatus.RECRUITING)
+                .recruitStatus(RecruitStatus.RECRUITING)
                 .build();
         Slice<PostListResponseDto> posts = postService.getPostListByCondition(postId,pageable,condition);
 
@@ -164,7 +164,7 @@ class PostServiceTest {
                 .content("수정")
                 .kakao_url("kakao_url")
                 .recruitmentLimit(2)
-                .recuritCompleteStatus(RecruitStatus.RECRUIT_COMPLETE)
+                .recruitStatus(RecruitStatus.RECRUIT_COMPLETE)
                 .travelStartDate("2024-02-28")
                 .parentCategoryId(1L)
                 .childCategoryId(8L)

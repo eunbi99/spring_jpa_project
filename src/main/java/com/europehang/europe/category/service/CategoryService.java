@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.europehang.europe.exception.ErrorCode.*;
+import static com.europehang.europe.common.enums.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

@@ -40,11 +40,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return post.childCategory.id.eq(childCategoryId);
     }
 
-    private BooleanExpression isRecruitCompleted(RecruitStatus recruitStatus) {
+    private BooleanExpression recruitStatusEq(RecruitStatus recruitStatus) {
         if (recruitStatus == null) {
             return null;
         }
-        return post.isRecruitCompleted.stringValue().eq(recruitStatus.getStatus());
+        return post.recruitStatus.stringValue().eq(recruitStatus.getStatus());
     }
 
     @Override
@@ -54,13 +54,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                              post.id,
                              post.title,
                              post.content,
-                             post.isRecruitCompleted,
+                             post.recruitStatus,
                              post.createdDate,
                              post.postLikes.size(),
                              post.parentCategory.categoryName.as("country"),
                              post.childCategory.categoryName.as("city"),
                              post.user.nickname,
-                             post.travelDate
+                             post.travelStartDate
                      ))
                      .from(post)
                      .join(post.user)
@@ -70,7 +70,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                              ltPostId(postId),
                              parentCategoryEq(condition.getParentCategoryId()),
                              childCategoryEq(condition.getChildCategoryId()),
-                             isRecruitCompleted(condition.getIsRecruitCompleted())
+                             recruitStatusEq(condition.getRecruitStatus())
                      )
                      .limit(pageable.getPageSize()+1)
                      .orderBy(post.id.desc())
@@ -88,10 +88,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.content,
                         post.kakao_url,
                         post.recruitmentLimit,
-                        post.isRecruitCompleted,
+                        post.recruitStatus,
                         post.postLikes.size(),
                         post.createdDate,
-                        post.travelDate,
+                        post.travelStartDate,
                         post.parentCategory.categoryName.as("country"),
                         post.childCategory.categoryName.as("city"),
                         post.views,
@@ -110,13 +110,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                         post.id,
                         post.title,
                         post.content,
-                        post.isRecruitCompleted,
+                        post.recruitStatus,
                         post.createdDate,
                         post.postLikes.size(),
                         post.parentCategory.categoryName.as("country"),
                         post.childCategory.categoryName.as("city"),
                         post.user.nickname,
-                        post.travelDate
+                        post.travelStartDate
                 )).from(post)
                 .join(post.user)
                 .where(

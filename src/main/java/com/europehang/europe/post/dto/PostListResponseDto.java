@@ -16,7 +16,7 @@ public class PostListResponseDto {
     private Long id;
     private String title;
     private String content;
-    private RecruitStatus RecrutingStatus;
+    private RecruitStatus recruitStatus;
     private LocalDateTime createdDate;
     private int likes;
     private String country;
@@ -25,11 +25,11 @@ public class PostListResponseDto {
     public String travelStartDate;
 
     @QueryProjection
-    public PostListResponseDto(Long id, String title, String content, RecruitStatus RecrutingStatus, LocalDateTime createdDate, int likes, String country, String city, String nickname,String travelStartDate) {
+    public PostListResponseDto(Long id, String title, String content, RecruitStatus recruitStatus, LocalDateTime createdDate, int likes, String country, String city, String nickname,String travelStartDate) {
         this.id= id;
         this.title = title;
         this.content = content;
-        this.RecrutingStatus = RecrutingStatus;
+        this.recruitStatus = recruitStatus;
         this.createdDate = createdDate;
         this.likes = likes;
         this.country = country;
@@ -43,13 +43,13 @@ public class PostListResponseDto {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .RecrutingStatus(post.getIsRecruitCompleted())
+                .recruitStatus(post.getRecruitStatus())
                 .likes(post.getPostLikes().size())
                 .createdDate(post.getCreatedDate())
                 .country(post.getParentCategory().getCategoryName())
                 .city(post.getChildCategory().getCategoryName())
                 .nickname(post.getUser().getNickname())
-                .travelStartDate(post.getTravelDate())
+                .travelStartDate(post.getTravelStartDate())
                 .build();
     }
 

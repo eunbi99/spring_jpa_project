@@ -2,6 +2,8 @@ package com.europehang.europe.post.dto;
 
 
 import com.europehang.europe.common.enums.RecruitStatus;
+import com.europehang.europe.common.util.SchemaDescriptionUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,12 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PostSearchCondition {
-    // 부모 카테고리
+    @Schema(description = SchemaDescriptionUtils.Post.parentCategoryId, example = "1")
     private Long parentCategoryId;
-    // 자식 카테고리
+
+    @Schema(description = SchemaDescriptionUtils.Post.childCategoryId, example = "6")
     private Long childCategoryId;
-    // 날짜
-    private String travelDate;
-    // 모집 중
-    private RecruitStatus isRecruitCompleted;
+
+    @Schema(description = SchemaDescriptionUtils.Post.travelStartDate, example = "2024-03-17")
+    private String travelStartDate;
+
+    @Schema(description = SchemaDescriptionUtils.Post.recruitStatus, allowableValues = {"RECRUITING", "RECRUIT_COMPLETE"})
+    private RecruitStatus recruitStatus;
 }
