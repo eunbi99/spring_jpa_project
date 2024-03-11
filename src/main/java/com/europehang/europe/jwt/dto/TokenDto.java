@@ -1,4 +1,4 @@
-package com.europehang.europe.user.dto;
+package com.europehang.europe.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenDto {
-    private String token;
+    private final String grantType = "Beaer"; // Beaer를 사용
+    private String accessToken;
+    private String refreshToken;
 }

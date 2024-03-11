@@ -4,6 +4,7 @@ import com.europehang.europe.common.dto.ApiResponse;
 import com.europehang.europe.common.dto.ErrorResponse;
 import com.europehang.europe.common.enums.ResponseStatus;
 import com.europehang.europe.post.dto.*;
+import com.europehang.europe.post.service.PostLikeService;
 import com.europehang.europe.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "post", description = "게시글 관련 API")
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final PostLikeService postLikeService;
 
     @PostMapping("/posts")
     @Operation(summary = "게시글 등록", description = "게시글 등록을 한다.", responses = {
@@ -85,4 +89,9 @@ public class PostController {
         return ResponseEntity.ok(res);
     }
 
+    @PostMapping("/posts/{postId}/like")
+    public ResponseEntity<ApiResponse> pushPostLike(@PathVariable("postId") Long id, @RequestHeader("Authorization") String token) {
+        ApiResponse res = ApiResponse.of(ResponseStatus.OK);
+        return ResponseEntity.ok(res);
+    }
 }

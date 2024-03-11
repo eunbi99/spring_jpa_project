@@ -3,7 +3,7 @@ package com.europehang.europe.config;
 import com.europehang.europe.jwt.JwtAccessDeniedHandler;
 import com.europehang.europe.jwt.JwtAuthenticationEntryPoint;
 import com.europehang.europe.jwt.JwtSecurityConfig;
-import com.europehang.europe.jwt.TokenProvider;
+import com.europehang.europe.jwt.JwtTokenProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +23,16 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, proxyTargetClass = true)
 public class SecurityConfig {
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     public SecurityConfig(
-            TokenProvider tokenProvider,
+            JwtTokenProvider jwtTokenProvider,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             JwtAccessDeniedHandler jwtAccessDeniedHandler
     ) {
-        this.tokenProvider = tokenProvider;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
@@ -77,8 +77,9 @@ public class SecurityConfig {
                         .requestMatchers("/resources/**").permitAll()
                         .requestMatchers("/signUp").permitAll()
                         .requestMatchers("/user/check-email").permitAll()
-                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/signIn").permitAll()
                         .requestMatchers("/posts/**").permitAll()
+                        .requestMatchers("/token/reissue").permitAll()
                         .anyRequest().authenticated() // 나머지 요청들은 모두 인증 되어야한다.
                 )
                 .formLogin(login -> login
@@ -86,7 +87,7 @@ public class SecurityConfig {
                         .successHandler(new SimpleUrlAuthenticationSuccessHandler("/login")) // 수정 필요
                         .permitAll()
                 )
-                .with(new JwtSecurityConfig(tokenProvider), customizer -> {})
+                .with(new JwtSecurityConfig(jwtTokenProvider), customizer -> {})
                 .build();
     }
 }

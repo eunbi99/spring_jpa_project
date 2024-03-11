@@ -1,9 +1,7 @@
-package com.europehang.europe.user.service;
+package com.europehang.europe.auth.service;
 
 import com.europehang.europe.common.enums.Gender;
-import com.europehang.europe.post.dto.PostRegisterRequestDto;
 import com.europehang.europe.user.dto.UserJoinRequestDto;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -21,7 +19,7 @@ import java.util.Set;
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
-class UserServiceTest {
+class AuthServiceTest {
 
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
@@ -34,7 +32,7 @@ class UserServiceTest {
     }
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @Test
     public void 회원가입_실패() {
@@ -46,19 +44,12 @@ class UserServiceTest {
                 .nickname("테스트1")
                 .build();
 
-        userService.userSignup(userDto);
+        authService.userSignup(userDto);
 
         Set<ConstraintViolation<UserJoinRequestDto>> violations = validator.validate(userDto);
 
         violations.forEach(i -> System.out.println(i.getMessage()));
         Assertions.assertEquals(violations.size(),1);
 
-    }
-    @Test
-    public void 이메일_중복확인() {
-        String email = "test100@gmail.com";
-        boolean isExistEmail = userService.checkDuplicationEmail(email);
-
-        Assertions.assertEquals(isExistEmail,false);
     }
 }

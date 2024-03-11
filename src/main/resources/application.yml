@@ -17,13 +17,14 @@ spring:
     hikari:
       maximum-pool-size: 40
   redis:
-    host: local
+    host: localhost
     port: 6379
 
 jwt:
   header: Authorization
   secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
-  token-validity-in-seconds: 86400
+  access-token-validity-in-seconds: 43200 # 12시간
+  refresh-token-validity-in-seconds : 1209600 # 14일
 
 logging:
   level:
