@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean checkDuplicationNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
     public boolean checkNicknameExist(String nickname) {
         return userRepository.existsByNickname(nickname);
     }

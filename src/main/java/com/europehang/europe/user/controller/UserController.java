@@ -33,18 +33,26 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final RedisTemplate<String, String> redisTemplate;
 
-    @GetMapping("/user/check-email")
+    @GetMapping("/user/email/{email}")
     @Operation(summary = "이메일 중복확인", description = "이메일 중복확인을 한다.", responses = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "이메일 중복 여부(true/false)", content = @Content(schema = @Schema(implementation = ApiResponse.class)))})
-    public ResponseEntity<ApiResponse> checkDuplicationEmail(@RequestParam String email) {
+    public ResponseEntity<ApiResponse> checkDuplicationEmail(@PathVariable(name = "email") String email) {
         boolean isExistEmail = userService.checkDuplicationEmail(email);
         String emailExistStatus = isExistEmail ? "Y" : "N";
 
         ApiResponse res = ApiResponse.of(ResponseStatus.OK, emailExistStatus);
+
+        return ResponseEntity.ok(res);
+    }
+    @GetMapping("/user/nickname/{nickname}")
+    @Operation(summary = "닉네임 중복확인", description = "닉네임 중복확인을 한다.", responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "닉네임 중복 여부(true/false)", content = @Content(schema = @Schema(implementation = ApiResponse.class)))})
+    public ResponseEntity<ApiResponse> checkDuplicationNickname(@PathVariable(name = "nickname")  String nickname) {
+        boolean isExistNickname = userService.checkDuplicationNickname(nickname);
+        String nicknameExistStatus = isExistNickname ? "Y" : "N";
+
+        ApiResponse res = ApiResponse.of(ResponseStatus.OK, nicknameExistStatus);
 
         return ResponseEntity.ok(res);
     }
@@ -53,6 +61,7 @@ public class UserController {
     */
     @GetMapping("/user")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @Operation(summary = "User와 Admin 권한 조회", description = "USER, ADMIN 권한 모두 호출")
     public ResponseEntity<ApiResponse> getMyUserInfo() {
         ApiResponse res = ApiResponse.of(ResponseStatus.OK, userService.getMyUserWithRoles().get());
 
@@ -64,6 +73,7 @@ public class UserController {
      */
     @GetMapping(value = "/user/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Admin 권한 조회", description = "ADMIN 권한만 호출할 수 있도록 설정")
     public ResponseEntity<ApiResponse> getUserInfo(@PathVariable("email") String email) {
         ApiResponse res = ApiResponse.of(ResponseStatus.OK, userService.getUserWithRoles(email).get());
 

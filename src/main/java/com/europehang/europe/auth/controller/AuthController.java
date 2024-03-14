@@ -18,10 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "회원가입 및 JWT 관련 ", description = "JWT 관련, 회원가입 API")
 @RestController
@@ -34,7 +31,8 @@ public class AuthController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글 등록 성공", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<ApiResponse> signup(@RequestBody @Valid UserJoinRequestDto userJoinRequestDto) {
-        ApiResponse res = ApiResponse.of(ResponseStatus.OK, authService.userSignup(userJoinRequestDto));
+        authService.userSignup(userJoinRequestDto);
+        ApiResponse res = ApiResponse.of(ResponseStatus.OK);
 
         return ResponseEntity.ok(res);
     }

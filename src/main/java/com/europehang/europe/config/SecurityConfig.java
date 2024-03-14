@@ -7,6 +7,7 @@ import com.europehang.europe.jwt.JwtTokenProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -74,12 +75,9 @@ public class SecurityConfig {
                 // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다는 의미.
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(SWAGGER_URI).permitAll()
-                        .requestMatchers("/resources/**").permitAll()
-                        .requestMatchers("/signUp").permitAll()
-                        .requestMatchers("/user/check-email").permitAll()
-                        .requestMatchers("/signIn").permitAll()
-                        .requestMatchers("/posts/**").permitAll()
-                        .requestMatchers("/token/reissue").permitAll()
+                        .requestMatchers("/signIn","/signUp","/token/reissue").permitAll()
+                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts","/posts/search").permitAll()
                         .anyRequest().authenticated() // 나머지 요청들은 모두 인증 되어야한다.
                 )
                 .formLogin(login -> login
