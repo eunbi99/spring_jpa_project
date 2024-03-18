@@ -19,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +70,7 @@ public class AuthService {
         jwtTokenProvider.validateToken(refreshToken);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-        String storedRefreshToken = redisUtils.getRefreshToken(authentication.getName());
+        String storedRefreshToken = redisUtils.getRefreshTokenByKey(authentication.getName());
 
         if(!storedRefreshToken.equals(refreshToken)) {
             throw new CustomException(ErrorCode.MISMATCH_TOKEN);
@@ -83,6 +86,18 @@ public class AuthService {
                 .accessToken(newAccessToken)
                 .refreshToken(storedRefreshToken)
                 .build();
+    }
+
+    public void logout(String accessToken) {
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        String email = authentication.getName();
+
+        String refreshToken = redisUtils.getRefreshTokenByKey(email);
+        if(refreshToken == null) {
+            throw new CustomException(ErrorCode.NOT_EXISTS_AUTHORIZATION);
+        }
+
+        redisUtils.deleteRefreshTokenByKey(email);
     }
 
 }

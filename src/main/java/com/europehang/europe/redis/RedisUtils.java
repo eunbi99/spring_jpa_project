@@ -1,10 +1,13 @@
 package com.europehang.europe.redis;
 
+import com.europehang.europe.common.enums.ErrorCode;
+import com.europehang.europe.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -23,8 +26,12 @@ public class RedisUtils {
         );
     }
 
-    public String getRefreshToken(String email) {
+    public String getRefreshTokenByKey(String email) {
        return redisTemplate.opsForValue().get(email);
+    }
+
+    public void deleteRefreshTokenByKey(String email) {
+        redisTemplate.delete(email);
     }
 
 }

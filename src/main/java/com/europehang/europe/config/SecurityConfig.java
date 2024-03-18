@@ -18,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -75,15 +74,10 @@ public class SecurityConfig {
                 // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다는 의미.
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(SWAGGER_URI).permitAll()
-                        .requestMatchers("/signIn","/signUp","/token/reissue").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts","/posts/search").permitAll()
                         .anyRequest().authenticated() // 나머지 요청들은 모두 인증 되어야한다.
-                )
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .successHandler(new SimpleUrlAuthenticationSuccessHandler("/login")) // 수정 필요
-                        .permitAll()
                 )
                 .with(new JwtSecurityConfig(jwtTokenProvider), customizer -> {})
                 .build();
